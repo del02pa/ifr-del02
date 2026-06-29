@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFR DEL02/PA — Voluntariado</title>
+<style>
+  :root {
+    --azul-prf: #1B3A6B;
+    --azul-medio: #2A5298;
+    --azul-claro: #4A7FC1;
+    --dourado: #C8A84B;
+    --dourado-claro: #E8C96A;
+    --cinza-fundo: #F0F4F9;
+    --cinza-borda: #CBD5E1;
+    --cinza-texto: #475569;
+    --branco: #FFFFFF;
+    --verde: #16A34A;
+    --verde-claro: #DCFCE7;
+    --vermelho: #DC2626;
+    --vermelho-claro: #FEE2E2;
+    --amarelo-claro: #FEF9C3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--cinza-fundo);
+    min-height: 100vh;
+    color: #1E293B;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--azul-prf) 0%, var(--azul-medio) 100%);
+    color: var(--branco);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+
+  .header-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brasao {
+    width: 46px;
+    height: 46px;
+    background: var(--dourado);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(200,168,75,0.4);
+  }
+
+  .header-text h1 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+
+  .header-text p {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--branco);
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--azul-medio);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-title::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 14px;
+    background: var(--dourado);
+    border-radius: 2px;
+  }
+
+  /* OPERAÇÃO BADGE */
+  .operacao-badge {
+    background: linear-gradient(135deg, var(--azul-prf), var(--azul-claro));
+    color: var(--branco);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .op-label { font-size: 11px; opacity: 0.75; margin-bottom: 3px; }
+  .op-nome { font-size: 16px; font-weight: 700; }
+  .op-datas { font-size: 12px; opacity: 0.85; margin-top: 4px; }
+  .op-status {
+    background: var(--dourado);
+    color: var(--azul-prf);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* FORM */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cinza-texto);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 9px;
+    font-size: 15px;
+    color: #1E293B;
+    background: var(--branco);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--azul-claro);
+    box-shadow: 0 0 0 3px rgba(74,127,193,0.15);
+  }
+
+  .field { margin-bottom: 16px; }
+
+  /* SERVIDOR CONFIRMADO */
+  .servidor-info {
+    background: var(--cinza-fundo);
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 9px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .servidor-info.ativo { display: block; }
+
+  .servidor-nome {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--azul-prf);
+  }
+
+  .servidor-meta {
+    font-size: 12px;
+    color: var(--cinza-texto);
+    margin-top: 3px;
+  }
+
+  .elegivel-sim {
+    display: inline-block;
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  .elegivel-nao {
+    display: inline-block;
+    background: var(--vermelho-claro);
+    color: var(--vermelho);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  /* DATAS */
+  .datas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .data-item { position: relative; }
+
+  .data-label-num {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: var(--azul-medio);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    z-index: 1;
+  }
+
+  .data-item input { padding-top: 14px; font-size: 13px; }
+
+  .hint {
+    font-size: 11px;
+    color: var(--cinza-texto);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* OBS */
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 72px;
+    color: #1E293B;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus {
+    border-color: var(--azul-claro);
+    box-shadow: 0 0 0 3px rgba(74,127,193,0.15);
+  }
+
+  /* BOTÃO */
+  .btn-enviar {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--azul-prf), var(--azul-medio));
+    color: var(--branco);
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+
+  .btn-enviar:hover { opacity: 0.92; }
+  .btn-enviar:active { transform: scale(0.99); }
+  .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secundario {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--azul-medio);
+    border: 1.5px solid var(--azul-claro);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+  }
+
+  .btn-secundario:hover { background: rgba(74,127,193,0.08); }
+
+  /* ALERT */
+  .alert {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .alert.ativo { display: flex; gap: 10px; align-items: flex-start; }
+  .alert-icon { font-size: 18px; flex-shrink: 0; }
+  .alert-erro { background: var(--vermelho-claro); color: #991B1B; border: 1px solid #FECACA; }
+  .alert-ok { background: var(--verde-claro); color: #14532D; border: 1px solid #BBF7D0; }
+  .alert-aviso { background: var(--amarelo-claro); color: #713F12; border: 1px solid #FEF08A; }
+
+  /* SUCESSO */
+  .tela-sucesso {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .tela-sucesso.ativo { display: block; }
+
+  .check-circle {
+    width: 72px;
+    height: 72px;
+    background: var(--verde-claro);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 16px;
+  }
+
+  .sucesso-nome {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--azul-prf);
+    margin-bottom: 6px;
+  }
+
+  .sucesso-msg {
+    font-size: 14px;
+    color: var(--cinza-texto);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .sucesso-datas {
+    background: var(--cinza-fundo);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .sucesso-datas-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cinza-texto);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .data-chip {
+    display: inline-block;
+    background: var(--azul-medio);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin: 3px 3px 3px 0;
+  }
+
+  /* LOADING */
+  .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RANKING PREVIEW */
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--cinza-fundo);
+  }
+
+  .ranking-item:last-child { border-bottom: none; }
+
+  .rank-pos {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--cinza-fundo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--cinza-texto);
+    flex-shrink: 0;
+  }
+
+  .rank-pos.top3 { background: var(--dourado); color: var(--azul-prf); }
+
+  .rank-nome { font-size: 13px; font-weight: 600; flex: 1; }
+  .rank-ifr { font-size: 11px; color: var(--cinza-texto); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--branco);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 9px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cinza-texto);
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.2s;
+  }
+
+  .tab.ativo {
+    background: var(--azul-prf);
+    color: white;
+  }
+
+  .tela { display: none; }
+  .tela.ativa { display: block; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--cinza-texto);
+    padding: 0 16px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brasao">🛡️</div>
+    <div class="header-text">
+      <h1>IFR DEL02/PA — Sistema de Voluntariado</h1>
+      <p>Polícia Rodoviária Federal · Ipixuna do Pará</p>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab ativo" onclick="mudarTela('voluntariar')">✋ Voluntariar-se</div>
+    <div class="tab" onclick="mudarTela('ranking')">🏆 Ranking</div>
+    <div class="tab" onclick="mudarTela('desistir')">↩ Desistir</div>
+  </div>
+
+  <!-- ===== TELA: VOLUNTARIAR ===== -->
+  <div class="tela ativa" id="tela-voluntariar">
+
+    <!-- OPERAÇÃO ATIVA -->
+    <div class="operacao-badge" id="badge-operacao">
+      <div>
+        <div class="op-label">OPERAÇÃO ATIVA</div>
+        <div class="op-nome" id="op-nome">Carregando...</div>
+        <div class="op-datas" id="op-datas"></div>
+      </div>
+      <div class="op-status" id="op-status">ABERTA</div>
+    </div>
+
+    <!-- ALERTA GLOBAL -->
+    <div class="alert alert-erro ativo" id="alert-config" style="display:none">
+      <span class="alert-icon">⚠️</span>
+      <div><strong>Configure o sistema primeiro.</strong> Abra o Google Apps Script e atualize a URL da planilha na variável <code>SHEET_ID</code>.</div>
+    </div>
+
+    <!-- FORMULÁRIO -->
+    <div id="form-container">
+
+      <div class="card">
+        <div class="card-title">Identificação</div>
+
+        <div class="field">
+          <label>Matrícula SIAPE</label>
+          <input type="text" id="matricula" placeholder="Ex: 1069936" inputmode="numeric"
+                 maxlength="10" oninput="buscarServidor(this.value)">
+          <div class="servidor-info" id="servidor-info">
+            <div class="servidor-nome" id="servidor-nome"></div>
+            <div class="servidor-meta" id="servidor-meta"></div>
+            <div id="elegivel-badge"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="card-datas" style="display:none">
+        <div class="card-title">Datas disponíveis</div>
+        <p class="hint" style="margin-bottom:12px">Marque os dias em que você pode trabalhar nesta operação. Mínimo 1 data.</p>
+
+        <div class="datas-grid" id="checkboxes-datas">
+          <!-- Gerado dinamicamente -->
+        </div>
+
+        <div class="field" style="margin-top:14px">
+          <label>Observação (opcional)</label>
+          <textarea id="obs" placeholder="Alguma restrição ou informação para a chefia?"></textarea>
+        </div>
+      </div>
+
+      <div class="alert" id="alert-form"></div>
+
+      <button class="btn-enviar" id="btn-enviar" onclick="enviarVoluntariado()" style="display:none">
+        Confirmar voluntariado
+      </button>
+
+    </div>
+
+    <!-- TELA SUCESSO -->
+    <div class="tela-sucesso" id="tela-sucesso">
+      <div class="card">
+        <div class="check-circle">✅</div>
+        <div class="sucesso-nome" id="sucesso-nome"></div>
+        <div class="sucesso-msg">Seu voluntariado foi registrado com sucesso.<br>A chefia será notificada.</div>
+        <div class="sucesso-datas">
+          <div class="sucesso-datas-title">Datas registradas</div>
+          <div id="sucesso-chips"></div>
+        </div>
+        <button class="btn-secundario" onclick="novoRegistro()">Registrar outro servidor</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== TELA: RANKING ===== -->
+  <div class="tela" id="tela-ranking">
+    <div class="card">
+      <div class="card-title">Ranking atual — TOP 10</div>
+      <div id="ranking-lista">
+        <div style="text-align:center;padding:20px;color:var(--cinza-texto);font-size:13px">
+          <span class="spinner" style="border-color:rgba(0,0,0,0.15);border-top-color:var(--azul-medio)"></span>
+          Carregando ranking...
+        </div>
+      </div>
+      <button class="btn-secundario" style="margin-top:12px" onclick="carregarRanking()">🔄 Atualizar</button>
+    </div>
+  </div>
+
+  <!-- ===== TELA: DESISTIR ===== -->
+  <div class="tela" id="tela-desistir">
+    <div class="card">
+      <div class="card-title">Registrar desistência</div>
+
+      <div class="field">
+        <label>Matrícula SIAPE</label>
+        <input type="text" id="mat-desistencia" placeholder="Ex: 1069936" inputmode="numeric">
+      </div>
+
+      <div class="field">
+        <label>Motivo</label>
+        <select id="motivo-desistencia">
+          <option value="">Selecione o motivo</option>
+          <option value="Impedimento de serviço">Impedimento de serviço</option>
+          <option value="Problema de saúde">Problema de saúde</option>
+          <option value="Compromisso particular">Compromisso particular</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Complemento (opcional)</label>
+        <textarea id="complemento-desistencia" placeholder="Detalhe se necessário..." style="min-height:56px"></textarea>
+      </div>
+
+      <div class="alert" id="alert-desistencia"></div>
+
+      <button class="btn-enviar" onclick="registrarDesistencia()">Registrar desistência</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  PRF DEL02/PA · Sistema IFR v1.0 · IN PRF 108/2023
+</footer>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO — SUBSTITUA PELA URL DO SEU WEB APP (Apps Script)
+// ============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec'; // Cole aqui após publicar o Apps Script
+
+// ============================================================
+// DADOS LOCAIS (fallback enquanto não conectado ao Apps Script)
+// Em produção, todos os dados vêm da planilha via Apps Script
+// ============================================================
+const CADASTRO_LOCAL = {
+  "1199895": { nome: "A. Jorge", elegivel: false },
+  "1716673": { nome: "Alexandre Gleydson", elegivel: true },
+  "1515439": { nome: "Alexandre Sampaio", elegivel: true },
+  "1200111": { nome: "Almada", elegivel: true },
+  "1069781": { nome: "Altair", elegivel: true },
+  "1070107": { nome: "Amadeu", elegivel: true },
+  "1075041": { nome: "Antonio Jose Ii", elegivel: false },
+  "1715864": { nome: "Antonio Rodrigues", elegivel: true },
+  "1069423": { nome: "Brito", elegivel: true },
+  "1069014": { nome: "Costa Junior", elegivel: true },
+  "1104561": { nome: "Cristian Vidal", elegivel: false },
+  "1648473": { nome: "D. Barreto", elegivel: true },
+  "3158225": { nome: "D.lobato", elegivel: true },
+  "1070102": { nome: "Damous", elegivel: false },
+  "1069869": { nome: "Douglas", elegivel: true },
+  "1789391": { nome: "Edivan Goncalves", elegivel: true },
+  "1503631": { nome: "Erlon", elegivel: true },
+  "1200661": { nome: "Ewerton Mesquita", elegivel: true },
+  "1378810": { nome: "Fabricio Rodrigues", elegivel: true },
+  "1792749": { nome: "Gilberson", elegivel: true },
+  "3045564": { nome: "Gilson Ii", elegivel: true },
+  "1716398": { nome: "Giordano", elegivel: true },
+  "1764014": { nome: "Hayato", elegivel: true },
+  "1069469": { nome: "Heikel", elegivel: true },
+  "1069406": { nome: "Helder", elegivel: false },
+  "1200473": { nome: "Idailson", elegivel: true },
+  "1199870": { nome: "Irineu Souza", elegivel: true },
+  "1542848": { nome: "J. Pimentel", elegivel: true },
+  "1985620": { nome: "J.sampaio", elegivel: true },
+  "1069936": { nome: "Jacy", elegivel: true },
+  "1069798": { nome: "Jose Melo", elegivel: true },
+  "1200107": { nome: "Luiz Waldomiro", elegivel: true },
+  "1541710": { nome: "M. Carlos", elegivel: true },
+  "1716925": { nome: "Marcio Freitas", elegivel: true },
+  "1200120": { nome: "Marcos Tavares", elegivel: true },
+  "1078162": { nome: "Moita", elegivel: true },
+  "1078151": { nome: "Moura", elegivel: true },
+  "1070111": { nome: "Norberto", elegivel: true },
+  "1989577": { nome: "P. Bastos", elegivel: true },
+  "1301570": { nome: "Pena", elegivel: true },
+  "1880259": { nome: "Potiguara", elegivel: true },
+  "1200116": { nome: "R. Pinho", elegivel: true },
+  "1540644": { nome: "Renato Cesar", elegivel: false },
+  "1301577": { nome: "Ricardo", elegivel: true },
+  "1481295": { nome: "Rogerio Alves", elegivel: true },
+  "1069909": { nome: "Sapucaia", elegivel: true },
+  "1492727": { nome: "Satiro", elegivel: true },
+  "1200124": { nome: "Sergio Cardoso", elegivel: true },
+  "2314378": { nome: "Silvio Rabelo", elegivel: true },
+  "1069488": { nome: "Wagner", elegivel: true },
+  "2194993": { nome: "Walson", elegivel: true },
+  "1069905": { nome: "Washington", elegivel: true }
+};
+
+// Operação ativa (vem do Apps Script em produção)
+let OPERACAO_ATIVA = {
+  nome: "Operação Padrão DEL02/PA",
+  datas: [], // preenchido ao carregar
+  status: "ABERTA"
+};
+
+let servidorAtual = null;
+let datasSelecionadas = [];
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function() {
+  carregarOperacaoAtiva();
+  carregarRanking();
+};
+
+async function carregarOperacaoAtiva() {
+  // Tenta buscar do Apps Script; se não, usa dados de exemplo
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    try {
+      const r = await fetch(`${APPS_SCRIPT_URL}?action=getOperacao`);
+      const d = await r.json();
+      OPERACAO_ATIVA = d;
+    } catch(e) {
+      usarOperacaoDemo();
+    }
+  } else {
+    usarOperacaoDemo();
+  }
+  renderizarOperacao();
+}
+
+function usarOperacaoDemo() {
+  // Gera próximos 6 dias úteis como datas de exemplo
+  const hoje = new Date();
+  const datas = [];
+  let d = new Date(hoje);
+  d.setDate(d.getDate() + 1);
+  while (datas.length < 6) {
+    const dia = d.getDay();
+    if (dia !== 0 && dia !== 6) datas.push(new Date(d));
+    d.setDate(d.getDate() + 1);
+  }
+  OPERACAO_ATIVA = {
+    nome: "Operação IFR DEL02/PA",
+    datas: datas.map(x => x.toISOString().split('T')[0]),
+    status: "ABERTA"
+  };
+}
+
+function renderizarOperacao() {
+  document.getElementById('op-nome').textContent = OPERACAO_ATIVA.nome;
+  document.getElementById('op-status').textContent = OPERACAO_ATIVA.status;
+
+  if (OPERACAO_ATIVA.datas.length > 0) {
+    const fmt = OPERACAO_ATIVA.datas.map(d => formatarData(d));
+    document.getElementById('op-datas').textContent = fmt.join(' · ');
+  }
+
+  // Renderiza checkboxes de datas
+  const cont = document.getElementById('checkboxes-datas');
+  cont.innerHTML = '';
+  OPERACAO_ATIVA.datas.forEach((data, i) => {
+    const d = new Date(data + 'T12:00:00');
+    const semana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][d.getDay()];
+    const dia = d.getDate().toString().padStart(2,'0');
+    const mes = (d.getMonth()+1).toString().padStart(2,'0');
+    const label = `${semana} ${dia}/${mes}`;
+
+    cont.innerHTML += `
+      <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--cinza-borda);border-radius:8px;cursor:pointer;transition:all 0.15s" 
+             id="label-data-${i}" onclick="toggleData('${data}', ${i}, this)">
+        <span style="width:20px;height:20px;border:2px solid var(--cinza-borda);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0" id="check-${i}"></span>
+        <span style="font-size:13px;font-weight:600">${label}</span>
+      </label>`;
+  });
+}
+
+function toggleData(data, idx, labelEl) {
+  const check = document.getElementById(`check-${idx}`);
+  const pos = datasSelecionadas.indexOf(data);
+  if (pos === -1) {
+    datasSelecionadas.push(data);
+    check.textContent = '✓';
+    check.style.background = 'var(--azul-medio)';
+    check.style.borderColor = 'var(--azul-medio)';
+    check.style.color = 'white';
+    labelEl.style.borderColor = 'var(--azul-claro)';
+    labelEl.style.background = 'rgba(74,127,193,0.06)';
+  } else {
+    datasSelecionadas.splice(pos, 1);
+    check.textContent = '';
+    check.style.background = '';
+    check.style.borderColor = 'var(--cinza-borda)';
+    labelEl.style.borderColor = 'var(--cinza-borda)';
+    labelEl.style.background = '';
+  }
+}
+
+// ============================================================
+// BUSCAR SERVIDOR
+// ============================================================
+let timerBusca = null;
+
+function buscarServidor(mat) {
+  clearTimeout(timerBusca);
+  const info = document.getElementById('servidor-info');
+
+  if (mat.length < 5) {
+    info.classList.remove('ativo');
+    document.getElementById('card-datas').style.display = 'none';
+    document.getElementById('btn-enviar').style.display = 'none';
+    servidorAtual = null;
+    return;
+  }
+
+  timerBusca = setTimeout(() => {
+    // Busca local primeiro
+    const s = CADASTRO_LOCAL[mat];
+    if (s) {
+      exibirServidor(mat, s);
+    } else if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+      // Busca remota
+      fetch(`${APPS_SCRIPT_URL}?action=getServidor&matricula=${mat}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.encontrado) exibirServidor(mat, d);
+          else { info.classList.remove('ativo'); mostrarAlerta('alert-form','erro','Matrícula não encontrada no cadastro.'); }
+        })
+        .catch(() => { info.classList.remove('ativo'); mostrarAlerta('alert-form','erro','Erro ao buscar servidor.'); });
+    } else {
+      info.classList.remove('ativo');
+      mostrarAlerta('alert-form', 'aviso', 'Matrícula não encontrada. Verifique se digitou corretamente.');
+    }
+  }, 400);
+}
+
+function exibirServidor(mat, s) {
+  servidorAtual = { matricula: mat, ...s };
+  document.getElementById('servidor-nome').textContent = s.nome;
+  document.getElementById('servidor-meta').textContent = `Matrícula: ${mat}`;
+
+  const badge = document.getElementById('elegivel-badge');
+  if (s.elegivel) {
+    badge.innerHTML = '<span class="elegivel-sim">✓ Elegível para IFR</span>';
+    document.getElementById('card-datas').style.display = 'block';
+    document.getElementById('btn-enviar').style.display = 'block';
+    limparAlerta('alert-form');
+  } else {
+    badge.innerHTML = '<span class="elegivel-nao">✗ Não elegível — marcado como inativo</span>';
+    document.getElementById('card-datas').style.display = 'none';
+    document.getElementById('btn-enviar').style.display = 'none';
+    mostrarAlerta('alert-form', 'erro', 'Este servidor não está elegível para IFR nesta unidade.');
+  }
+
+  document.getElementById('servidor-info').classList.add('ativo');
+  datasSelecionadas = [];
+  // Reset checkboxes
+  renderizarOperacao();
+}
+
+// ============================================================
+// ENVIAR VOLUNTARIADO
+// ============================================================
+async function enviarVoluntariado() {
+  limparAlerta('alert-form');
+
+  if (!servidorAtual) {
+    mostrarAlerta('alert-form', 'erro', 'Digite uma matrícula válida primeiro.'); return;
+  }
+  if (!servidorAtual.elegivel) {
+    mostrarAlerta('alert-form', 'erro', 'Servidor não elegível.'); return;
+  }
+  if (datasSelecionadas.length === 0) {
+    mostrarAlerta('alert-form', 'aviso', 'Selecione ao menos uma data.'); return;
+  }
+
+  const obs = document.getElementById('obs').value.trim();
+  const payload = {
+    action: 'registrarVoluntario',
+    matricula: servidorAtual.matricula,
+    nome: servidorAtual.nome,
+    operacao: OPERACAO_ATIVA.nome,
+    datas: datasSelecionadas,
+    observacao: obs
+  };
+
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    try {
+      const r = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const d = await r.json();
+      if (d.sucesso) {
+        exibirSucesso();
+      } else {
+        mostrarAlerta('alert-form', 'erro', d.mensagem || 'Erro ao registrar. Tente novamente.');
+        btn.disabled = false;
+        btn.innerHTML = 'Confirmar voluntariado';
+      }
+    } catch(e) {
+      mostrarAlerta('alert-form', 'erro', 'Erro de conexão. Verifique sua internet.');
+      btn.disabled = false;
+      btn.innerHTML = 'Confirmar voluntariado';
+    }
+  } else {
+    // Modo demo — simula sucesso
+    setTimeout(() => { exibirSucesso(); }, 1000);
+  }
+}
+
+function exibirSucesso() {
+  document.getElementById('sucesso-nome').textContent = servidorAtual.nome;
+  const chips = datasSelecionadas.map(d => `<span class="data-chip">${formatarData(d)}</span>`).join('');
+  document.getElementById('sucesso-chips').innerHTML = chips;
+  document.getElementById('form-container').style.display = 'none';
+  document.getElementById('badge-operacao').style.display = 'none';
+  document.getElementById('tela-sucesso').classList.add('ativo');
+}
+
+function novoRegistro() {
+  document.getElementById('matricula').value = '';
+  document.getElementById('obs').value = '';
+  document.getElementById('servidor-info').classList.remove('ativo');
+  document.getElementById('card-datas').style.display = 'none';
+  document.getElementById('btn-enviar').style.display = 'none';
+  document.getElementById('btn-enviar').disabled = false;
+  document.getElementById('btn-enviar').innerHTML = 'Confirmar voluntariado';
+  document.getElementById('tela-sucesso').classList.remove('ativo');
+  document.getElementById('form-container').style.display = 'block';
+  document.getElementById('badge-operacao').style.display = 'flex';
+  servidorAtual = null;
+  datasSelecionadas = [];
+  renderizarOperacao();
+  limparAlerta('alert-form');
+}
+
+// ============================================================
+// RANKING
+// ============================================================
+// Ranking do dashboard (dados extraídos da planilha)
+const RANKING_DEMO = [
+  { pos:1, nome:"Costa Junior", mat:"1069014", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:2, nome:"Moura", mat:"1078151", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:3, nome:"Irineu Souza", mat:"1199870", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:4, nome:"A. Jorge", mat:"1199895", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:5, nome:"Almada", mat:"1200111", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:6, nome:"Antonio Jose Ii", mat:"1075041", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:7, nome:"Damous", mat:"1070102", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:8, nome:"Marcos Tavares", mat:"1200120", ifr180:0, ultimaIfr:"Nunca recebeu" },
+  { pos:9, nome:"Jacy", mat:"1069936", ifr180:12, ultimaIfr:"15/02/2026" },
+  { pos:10, nome:"M. Carlos", mat:"1541710", ifr180:12, ultimaIfr:"04/04/2026" }
+];
+
+async function carregarRanking() {
+  const lista = document.getElementById('ranking-lista');
+  lista.innerHTML = '<div style="text-align:center;padding:16px;color:var(--cinza-texto);font-size:13px"><span class="spinner" style="border-color:rgba(0,0,0,0.15);border-top-color:var(--azul-medio)"></span> Atualizando...</div>';
+
+  let dados = RANKING_DEMO;
+
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    try {
+      const r = await fetch(`${APPS_SCRIPT_URL}?action=getRanking`);
+      dados = await r.json();
+    } catch(e) { /* usa demo */ }
+  }
+
+  lista.innerHTML = dados.map(s => `
+    <div class="ranking-item">
+      <div class="rank-pos ${s.pos <= 3 ? 'top3' : ''}">${s.pos}</div>
+      <div style="flex:1">
+        <div class="rank-nome">${s.nome}</div>
+        <div class="rank-ifr">IFR 180d: ${s.ifr180}h · Última: ${s.ultimaIfr}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// DESISTÊNCIA
+// ============================================================
+async function registrarDesistencia() {
+  const mat = document.getElementById('mat-desistencia').value.trim();
+  const motivo = document.getElementById('motivo-desistencia').value;
+  const compl = document.getElementById('complemento-desistencia').value.trim();
+
+  limparAlerta('alert-desistencia');
+
+  if (!mat || mat.length < 5) { mostrarAlerta('alert-desistencia','erro','Digite a matrícula.'); return; }
+  if (!motivo) { mostrarAlerta('alert-desistencia','erro','Selecione o motivo.'); return; }
+
+  const s = CADASTRO_LOCAL[mat];
+  if (!s && APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    mostrarAlerta('alert-desistencia','aviso','Matrícula não encontrada no cadastro local.'); return;
+  }
+
+  const payload = {
+    action: 'registrarDesistencia',
+    matricula: mat,
+    nome: s ? s.nome : mat,
+    operacao: OPERACAO_ATIVA.nome,
+    motivo: motivo + (compl ? ` — ${compl}` : '')
+  };
+
+  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    try {
+      const r = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const d = await r.json();
+      if (d.sucesso) mostrarAlerta('alert-desistencia','ok',`Desistência de ${s ? s.nome : mat} registrada com sucesso.`);
+      else mostrarAlerta('alert-desistencia','erro', d.mensagem || 'Erro ao registrar.');
+    } catch(e) { mostrarAlerta('alert-desistencia','erro','Erro de conexão.'); }
+  } else {
+    mostrarAlerta('alert-desistencia','ok',`[DEMO] Desistência de ${s ? s.nome : mat} registrada.`);
+  }
+}
+
+// ============================================================
+// UTILIDADES
+// ============================================================
+function mudarTela(id) {
+  document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+  document.getElementById(`tela-${id}`).classList.add('ativa');
+  event.target.classList.add('ativo');
+  if (id === 'ranking') carregarRanking();
+}
+
+function mostrarAlerta(id, tipo, msg) {
+  const el = document.getElementById(id);
+  el.className = `alert alert-${tipo === 'erro' ? 'erro' : tipo === 'ok' ? 'ok' : 'aviso'} ativo`;
+  const icons = { erro: '❌', ok: '✅', aviso: '⚠️' };
+  el.innerHTML = `<span class="alert-icon">${icons[tipo]}</span><div>${msg}</div>`;
+}
+
+function limparAlerta(id) {
+  const el = document.getElementById(id);
+  el.className = 'alert';
+  el.innerHTML = '';
+}
+
+function formatarData(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  const dia = d.getDate().toString().padStart(2,'0');
+  const mes = (d.getMonth()+1).toString().padStart(2,'0');
+  const semana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][d.getDay()];
+  return `${semana} ${dia}/${mes}`;
+}
+</script>
+
+</body>
+</html>
