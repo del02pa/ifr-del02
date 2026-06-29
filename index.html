@@ -459,6 +459,96 @@
   .tela { display: none; }
   .tela.ativa { display: block; }
 
+  /* CONVOCAÇÃO */
+  .conv-dia {
+    border: 1.5px solid var(--cinza-borda);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .conv-dia-header {
+    background: linear-gradient(135deg, var(--azul-prf), var(--azul-medio));
+    color: white;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .conv-dia-data { font-size: 14px; font-weight: 700; }
+  .conv-dia-vagas { font-size: 11px; opacity: 0.85; }
+
+  .conv-servidor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--cinza-fundo);
+  }
+
+  .conv-servidor:last-child { border-bottom: none; }
+
+  .conv-pos {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--dourado);
+    color: var(--azul-prf);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .conv-pos.reserva {
+    background: var(--cinza-fundo);
+    color: var(--cinza-texto);
+  }
+
+  .conv-nome { font-size: 13px; font-weight: 600; flex: 1; }
+  .conv-ifr { font-size: 11px; color: var(--cinza-texto); }
+
+  .conv-badge-convocado {
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .conv-badge-reserva {
+    background: var(--amarelo-claro);
+    color: #713F12;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .conv-sem-vol {
+    padding: 14px;
+    text-align: center;
+    color: var(--cinza-texto);
+    font-size: 13px;
+  }
+
+  .conv-vagas-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    background: var(--cinza-fundo);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .conv-vagas-input label { margin: 0; font-size: 12px; }
+
   /* FOOTER */
   footer {
     text-align: center;
@@ -489,6 +579,7 @@
   <div class="tabs">
     <div class="tab ativo" onclick="mudarTela('voluntariar')">✋ Voluntariar-se</div>
     <div class="tab" onclick="mudarTela('ranking')">🏆 Ranking</div>
+    <div class="tab" onclick="mudarTela('convocacao')">📋 Convocação</div>
     <div class="tab" onclick="mudarTela('desistir')">↩ Desistir</div>
   </div>
 
@@ -578,6 +669,23 @@
         </div>
       </div>
       <button class="btn-secundario" style="margin-top:12px" onclick="carregarRanking()">🔄 Atualizar</button>
+    </div>
+  </div>
+
+  <!-- ===== TELA: CONVOCAÇÃO ===== -->
+  <div class="tela" id="tela-convocacao">
+    <div class="card">
+      <div class="card-title">📋 Convocação Automática</div>
+      <p style="font-size:12px;color:var(--cinza-texto);margin-bottom:16px">
+        Baseada no ranking da IN PRF 108/2023 cruzado com os voluntários cadastrados.
+      </p>
+      <div id="convocacao-lista">
+        <div style="text-align:center;padding:20px;color:var(--cinza-texto);font-size:13px">
+          <span class="spinner" style="border-color:rgba(0,0,0,0.15);border-top-color:var(--azul-medio)"></span>
+          Carregando convocação...
+        </div>
+      </div>
+      <button class="btn-secundario" style="margin-top:12px" onclick="carregarConvocacao()">🔄 Atualizar</button>
     </div>
   </div>
 
@@ -1004,6 +1112,82 @@ async function registrarDesistencia() {
 }
 
 // ============================================================
+// CONVOCAÇÃO
+// ============================================================
+async function carregarConvocacao() {
+  const lista = document.getElementById('convocacao-lista');
+  lista.innerHTML = '<div style="text-align:center;padding:20px;color:var(--cinza-texto);font-size:13px"><span class="spinner" style="border-color:rgba(0,0,0,0.15);border-top-color:var(--azul-medio)"></span> Calculando convocação...</div>';
+
+  try {
+    const params = new URLSearchParams({
+      action  : 'getConvocacaoCompleta',
+      operacao: OPERACAO_ATIVA.nome
+    });
+    const r = await fetch(`${APPS_SCRIPT_URL}?${params}`, { redirect: 'follow' });
+    const d = await r.json();
+
+    if (!d.datas || d.datas.length === 0) {
+      lista.innerHTML = '<div style="text-align:center;padding:20px;color:var(--cinza-texto)">Nenhuma data encontrada para esta operação.</div>';
+      return;
+    }
+
+    let html = '';
+    for (const dia of d.datas) {
+      const dataFmt = formatarData(dia.data);
+      html += `<div class="conv-dia">
+        <div class="conv-dia-header">
+          <div class="conv-dia-data">${dataFmt}</div>
+          <div class="conv-dia-vagas">${dia.convocados.length}/${dia.vagas} vagas · ${dia.total || 0} voluntário(s)</div>
+        </div>`;
+
+      if (dia.semVoluntarios) {
+        html += `<div class="conv-sem-vol">⚠️ Nenhum voluntário para este dia</div>`;
+      } else {
+        // Convocados
+        if (dia.convocados.length > 0) {
+          dia.convocados.forEach((s, i) => {
+            html += `<div class="conv-servidor">
+              <div class="conv-pos">${i+1}</div>
+              <div style="flex:1">
+                <div class="conv-nome">${s.nome}</div>
+                <div class="conv-ifr">Ranking ${s.pos}º · IFR 180d: ${s.ifr180}h · Última: ${s.ultimaIfr}</div>
+              </div>
+              <span class="conv-badge-convocado">✓ CONVOCADO</span>
+            </div>`;
+          });
+        }
+
+        // Reservas
+        if (dia.reserva && dia.reserva.length > 0) {
+          html += `<div style="padding:6px 14px;background:var(--cinza-fundo);font-size:11px;font-weight:700;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:0.5px">Reserva</div>`;
+          dia.reserva.forEach((s, i) => {
+            html += `<div class="conv-servidor">
+              <div class="conv-pos reserva">${i+1}</div>
+              <div style="flex:1">
+                <div class="conv-nome">${s.nome}</div>
+                <div class="conv-ifr">Ranking ${s.pos}º · IFR 180d: ${s.ifr180}h</div>
+              </div>
+              <span class="conv-badge-reserva">RESERVA</span>
+            </div>`;
+          });
+        }
+
+        if (dia.convocados.length === 0) {
+          html += `<div class="conv-sem-vol">⚠️ Voluntários insuficientes para preencher as vagas</div>`;
+        }
+      }
+
+      html += '</div>';
+    }
+
+    lista.innerHTML = html;
+  } catch(e) {
+    lista.innerHTML = '<div style="text-align:center;padding:20px;color:var(--vermelho)">Erro ao carregar convocação. Tente novamente.</div>';
+    console.error(e);
+  }
+}
+
+// ============================================================
 // UTILIDADES
 // ============================================================
 function mudarTela(id) {
@@ -1012,6 +1196,7 @@ function mudarTela(id) {
   document.getElementById(`tela-${id}`).classList.add('ativa');
   event.target.classList.add('ativo');
   if (id === 'ranking') carregarRanking();
+  if (id === 'convocacao') carregarConvocacao();
 }
 
 function mostrarAlerta(id, tipo, msg) {
