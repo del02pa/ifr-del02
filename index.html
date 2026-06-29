@@ -880,29 +880,27 @@ async function enviarVoluntariado() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Enviando...';
 
-  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
-    try {
-      const r = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const d = await r.json();
-      if (d.sucesso) {
-        exibirSucesso();
-      } else {
-        mostrarAlerta('alert-form', 'erro', d.mensagem || 'Erro ao registrar. Tente novamente.');
-        btn.disabled = false;
-        btn.innerHTML = 'Confirmar voluntariado';
-      }
-    } catch(e) {
-      mostrarAlerta('alert-form', 'erro', 'Erro de conexão. Verifique sua internet.');
+  try {
+    const params = new URLSearchParams({
+      action    : 'registrarVoluntario',
+      matricula : servidorAtual.matricula,
+      operacao  : OPERACAO_ATIVA.nome,
+      datas     : datasSelecionadas.join(','),
+      obs       : obs
+    });
+    const r = await fetch(`${APPS_SCRIPT_URL}?${params}`, { redirect: 'follow' });
+    const d = await r.json();
+    if (d.sucesso) {
+      exibirSucesso();
+    } else {
+      mostrarAlerta('alert-form', 'erro', d.mensagem || 'Erro ao registrar. Tente novamente.');
       btn.disabled = false;
       btn.innerHTML = 'Confirmar voluntariado';
     }
-  } else {
-    // Modo demo — simula sucesso
-    setTimeout(() => { exibirSucesso(); }, 1000);
+  } catch(e) {
+    mostrarAlerta('alert-form', 'erro', 'Erro de conexão. Verifique sua internet.');
+    btn.disabled = false;
+    btn.innerHTML = 'Confirmar voluntariado';
   }
 }
 
