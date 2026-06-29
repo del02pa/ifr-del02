@@ -703,16 +703,19 @@ window.onload = function() {
 };
 
 async function carregarOperacaoAtiva() {
-  // Tenta buscar do Apps Script; se não, usa dados de exemplo
-  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
-    try {
-      const r = await fetch(`${APPS_SCRIPT_URL}?action=getOperacao`);
-      const d = await r.json();
+  try {
+    const r = await fetch(`${APPS_SCRIPT_URL}?action=getOperacao`, {
+      method: 'GET',
+      redirect: 'follow'
+    });
+    const d = await r.json();
+    if (d && d.nome) {
       OPERACAO_ATIVA = d;
-    } catch(e) {
+    } else {
       usarOperacaoDemo();
     }
-  } else {
+  } catch(e) {
+    console.error('Erro:', e);
     usarOperacaoDemo();
   }
   renderizarOperacao();
