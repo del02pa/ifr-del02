@@ -810,7 +810,7 @@ function buscarServidor(mat) {
     const s = CADASTRO_LOCAL[mat];
     if (s) {
       exibirServidor(mat, s);
-    } else if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
+    } else {
       // Busca remota
       fetch(`${APPS_SCRIPT_URL}?action=getServidor&matricula=${mat}`)
         .then(r => r.json())
@@ -819,9 +819,6 @@ function buscarServidor(mat) {
           else { info.classList.remove('ativo'); mostrarAlerta('alert-form','erro','Matrícula não encontrada no cadastro.'); }
         })
         .catch(() => { info.classList.remove('ativo'); mostrarAlerta('alert-form','erro','Erro ao buscar servidor.'); });
-    } else {
-      info.classList.remove('ativo');
-      mostrarAlerta('alert-form', 'aviso', 'Matrícula não encontrada. Verifique se digitou corretamente.');
     }
   }, 400);
 }
@@ -953,12 +950,11 @@ async function carregarRanking() {
 
   let dados = RANKING_DEMO;
 
-  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
-    try {
-      const r = await fetch(`${APPS_SCRIPT_URL}?action=getRanking`);
-      dados = await r.json();
-    } catch(e) { /* usa demo */ }
-  }
+  try {
+      const r = await fetch(`${APPS_SCRIPT_URL}?action=getRanking`, {redirect: "follow"});
+      const resultado = await r.json();
+      if (Array.isArray(resultado) && resultado.length > 0) dados = resultado;
+  } catch(e) { /* usa demo */ }
 
   lista.innerHTML = dados.map(s => `
     <div class="ranking-item">
@@ -984,9 +980,6 @@ async function registrarDesistencia() {
   if (!motivo) { mostrarAlerta('alert-desistencia','erro','Selecione o motivo.'); return; }
 
   const s = CADASTRO_LOCAL[mat];
-  if (!s && APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
-    mostrarAlerta('alert-desistencia','aviso','Matrícula não encontrada no cadastro local.'); return;
-  }
 
   const payload = {
     action: 'registrarDesistencia',
@@ -996,20 +989,18 @@ async function registrarDesistencia() {
     motivo: motivo + (compl ? ` — ${compl}` : '')
   };
 
-  if (APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxHCyrHS-24cDCGff4UZ78G20rCYO-A2u5TCfu4kC6BuC6hTPa9jWWkp918pB-WVk0p9g/exec') {
-    try {
-      const r = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const d = await r.json();
-      if (d.sucesso) mostrarAlerta('alert-desistencia','ok',`Desistência de ${s ? s.nome : mat} registrada com sucesso.`);
-      else mostrarAlerta('alert-desistencia','erro', d.mensagem || 'Erro ao registrar.');
-    } catch(e) { mostrarAlerta('alert-desistencia','erro','Erro de conexão.'); }
-  } else {
-    mostrarAlerta('alert-desistencia','ok',`[DEMO] Desistência de ${s ? s.nome : mat} registrada.`);
-  }
+  try {
+    const params = new URLSearchParams({
+      action    : "registrarDesistencia",
+      matricula : mat,
+      operacao  : OPERACAO_ATIVA.nome,
+      motivo    : motivo + (compl ? ` — ${compl}` : "")
+    });
+    const r = await fetch(`${APPS_SCRIPT_URL}?${params}`, {redirect: "follow"});
+    const d = await r.json();
+    if (d.sucesso) mostrarAlerta("alert-desistencia","ok",`Desistência de ${s ? s.nome : mat} registrada com sucesso.`);
+    else mostrarAlerta("alert-desistencia","erro", d.mensagem || "Erro ao registrar.");
+  } catch(e) { mostrarAlerta("alert-desistencia","erro","Erro de conexão."); }
 }
 
 // ============================================================
