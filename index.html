@@ -1064,14 +1064,17 @@ async function carregarRanking() {
       if (Array.isArray(resultado) && resultado.length > 0) dados = resultado;
   } catch(e) { /* usa demo */ }
 
-  lista.innerHTML = dados.map(s => `
+  lista.innerHTML = dados.map((s, i) => {
+    const pos = i + 1;
+    return `
     <div class="ranking-item">
-      <div class="rank-pos ${s.pos <= 3 ? 'top3' : ''}">${s.pos}</div>
+      <div class="rank-pos ${pos <= 3 ? 'top3' : ''}">${pos}</div>
       <div style="flex:1">
         <div class="rank-nome">${s.nome}</div>
         <div class="rank-ifr">IFR 180d: ${s.ifr180}h · Última: ${s.ultimaIfr}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ============================================================
