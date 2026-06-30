@@ -1234,6 +1234,21 @@ async function carregarConvocacao() {
           });
         }
 
+        // Impedidos por Escala de Serviço
+        if (dia.impedidosEscala && dia.impedidosEscala.length > 0) {
+          html += `<div style="padding:6px 14px;background:#FFF7ED;font-size:11px;font-weight:700;color:#C2410C;text-transform:uppercase;letter-spacing:0.5px">⛔ Impedido — Escala de Serviço</div>`;
+          dia.impedidosEscala.forEach(s => {
+            html += `<div class="conv-servidor" style="background:#FFF7ED;opacity:0.85">
+              <div class="conv-pos" style="background:#FED7AA;color:#C2410C">–</div>
+              <div style="flex:1">
+                <div class="conv-nome">${s.nome}</div>
+                <div class="conv-ifr" style="color:#C2410C">${s.motivoImpedimento}</div>
+              </div>
+              <span style="font-size:10px;background:#FFEDD5;color:#C2410C;padding:2px 8px;border-radius:20px;font-weight:700;white-space:nowrap">PLANTÃO</span>
+            </div>`;
+          });
+        }
+
         if (dia.convocados.length === 0) {
           html += `<div class="conv-sem-vol">⚠️ Voluntários insuficientes para preencher as vagas</div>`;
         }
